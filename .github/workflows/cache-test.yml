@@ -40,3 +40,4 @@ jobs:
       - name: Verify west installation
         run: |
           west --version
+          ls -la ~/.cache/pip
