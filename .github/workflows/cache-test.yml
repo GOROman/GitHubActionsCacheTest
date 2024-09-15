@@ -1,0 +1,42 @@
+# .github/workflows/cache-python-west.yml
+name: Cache Python West
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cache-python-west:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+
+      # 3. Cache pip packages including 'west'
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # 4. Install dependencies (including 'west')
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 5. Run a command to verify 'west' installation
+      - name: Verify west installation
+        run: |
+          west --version
